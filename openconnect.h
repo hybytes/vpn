@@ -166,6 +166,19 @@ extern "C" {
 
 /****************************************************************************/
 
+/* Enumeration of supported VPN protocols */
+
+#define OPENCONNECT_PROTO_TCP 1
+#define OPENCONNECT_PROTO_UDP 2
+
+struct oc_vpn_proto {
+	const char *name;
+	const char *description;
+	unsigned int flags;
+};
+
+/****************************************************************************/
+
 /* Authentication form processing */
 
 #define OC_FORM_OPT_TEXT	1
@@ -640,6 +653,7 @@ int openconnect_has_oath_support(void);
 int openconnect_has_yubioath_support(void);
 int openconnect_has_system_key_support(void);
 
+int openconnect_get_supported_protocols(struct oc_vpn_proto **protos);
 int openconnect_set_protocol(struct openconnect_info *vpninfo, const char *protocol);
 
 struct addrinfo;

@@ -109,6 +109,7 @@ err:
 const struct vpn_proto openconnect_protos[] = {
 	{
 		.name = "anyconnect",
+		.description = "Cisco AnyConnect or ocserv",
 		.vpn_close_session = cstp_bye,
 		.tcp_connect = cstp_connect,
 		.tcp_mainloop = cstp_mainloop,
@@ -122,6 +123,7 @@ const struct vpn_proto openconnect_protos[] = {
 #endif
 	}, {
 		.name = "nc",
+		.description = "Juniper Network Connect (also supported by Junos Pulse servers)",
 		.vpn_close_session = NULL,
 		.tcp_connect = oncp_connect,
 		.tcp_mainloop = oncp_mainloop,
@@ -137,6 +139,7 @@ const struct vpn_proto openconnect_protos[] = {
 #endif
 	}, {
 		.name = "gp",
+		.description = "Palo Alto Networks' GlobalProtect",
 		.vpn_close_session = gpst_bye,
 		.tcp_connect = gpst_setup,
 		.tcp_mainloop = gpst_mainloop,
@@ -153,6 +156,26 @@ const struct vpn_proto openconnect_protos[] = {
 	},
 	{ /* NULL */ }
 };
+
+int openconnect_get_supported_protocols(struct oc_vpn_proto **protos)
+{
+	struct oc_vpn_proto *pr;
+	const struct vpn_proto *p;
+
+	*protos = pr = calloc(sizeof(openconnect_protos)/sizeof(*openconnect_protos), sizeof(*pr));
+	if (!pr)
+		return -ENOMEM;
+
+	for (p = openconnect_protos; p->name; p++, pr++) {
+		pr->name = p->name;
+		pr->description = p->description;
+		if (p->tcp_mainloop)
+			pr->flags |= OPENCONNECT_PROTO_TCP;
+		if (p->udp_mainloop)
+			pr->flags |= OPENCONNECT_PROTO_UDP;
+	}
+	return 0;
+}
 
 int openconnect_set_protocol(struct openconnect_info *vpninfo, const char *protocol)
 {
