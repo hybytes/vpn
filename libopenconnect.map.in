@@ -92,7 +92,7 @@ OPENCONNECT_5_4 {
 	openconnect_set_pass_tos;
 } OPENCONNECT_5_3;
 
-OPENCONNECT_7_1 {
+OPENCONNECT_5_5 {
  global:
 	openconnect_get_supported_protocols;
 } OPENCONNECT_5_4;
